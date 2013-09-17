@@ -1,6 +1,5 @@
 class PixelEditor
   
-  
   def create_new_image(m, n)
     Array.new(n) { Array.new(m) {'O'} }
   end
@@ -39,29 +38,33 @@ class PixelEditor
     pixels
   end
   
-  def fill_region(pixels, x, y, colour)
+  def fill_region(pixels, x, y, colour)  
     # Instance variables
     @region_map = []
-    @image = []
     @colour = 'O'
-    
-    # Let's find out the current color of the given pixel
-    current_colour = pixels[y][x]
-    
-    # Now let's explore the region    
-    # Let's push first pixel to the map
-    @region_map << [x, y]
-    
-    # We are looking for pixels in all 4 directions with the same colour
     @image = pixels
-    @colour = current_colour
     
-    # Launching the exploration mission
-    explore_around_pixel(x, y)
+    if validate_coordinates(x, 0, y, 0, pixels)
     
-    # We are back from recursion, and we should have a region map
-    @region_map.each do |point|
-      @image[point[1]][point[0]] = colour
+      # Let's find out the current color of the given pixel
+      current_colour = pixels[y][x]
+    
+      # Now let's explore the region    
+      # Let's push first pixel to the map
+      @region_map << [x, y]
+    
+      # We are looking for pixels in all 4 directions with the same colour
+      @image = pixels
+      @colour = current_colour
+    
+      # Launching the exploration mission
+      explore_around_pixel(x, y)
+    
+      # We are back from recursion, and we should have a region map
+      @region_map.each do |point|
+        @image[point[1]][point[0]] = colour
+      end
+      
     end
     
     @image
@@ -72,10 +75,9 @@ class PixelEditor
   # to properly explore the region
   #
   def explore_around_pixel(x, y)
-    puts "Exploring x: #{x} y: #{y}"
     
     # Going up
-    unless y == 0
+    unless y <= 0
       if @colour == @image[y-1][x]
         # Check if our map already contains this pixel
         unless @region_map.include?([x, y-1])
@@ -94,10 +96,30 @@ class PixelEditor
         end
       end
     end
+    
+    # Going left
+    unless x-1 < 0
+      if @colour == @image[y][x-1]
+        unless @region_map.include?([x-1, y])
+          @region_map << [x-1, y]
+          explore_around_pixel(x-1, y)
+        end
+      end
+    end
+    
+    # Going right
+    unless x+1 >= @image[0].length
+      if @colour == @image[y][x+1]
+        unless @region_map.include?([x+1, y])
+          @region_map << [x+1, y]
+          explore_around_pixel(x+1, y)
+        end
+      end
+    end
         
   end
   
-  # Basically checking that requested coordinates are
+  # Checking that requested coordinates are
   # within the image size
   def validate_coordinates(x1, x2, y1, y2, pixels)
     if (pixels.length > y1 && pixels.length > y2 && pixels[0].length > x1 && pixels[0].length > x2)
