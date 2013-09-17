@@ -37,6 +37,7 @@ while (!@exit_commands.include?(@input[0]))
     
   when 'H'
     # Draw a horizontal segment
+    @the_image = @editor.draw_horizontal_segment(@the_image, @input[1].to_i, @input[2].to_i, @input[3].to_i, @input[4])
     
   when 'F'
     # Fill the region
