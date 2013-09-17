@@ -1,4 +1,6 @@
 class PixelEditor
+  
+  
   def create_new_image(m, n)
     Array.new(n) { Array.new(m) {'O'} }
   end
@@ -35,6 +37,64 @@ class PixelEditor
       pixels[y].fill(colour, x1..x2)
     end
     pixels
+  end
+  
+  def fill_region(pixels, x, y, colour)
+    # Instance variables
+    @region_map = []
+    @image = []
+    @colour = 'O'
+    
+    # Let's find out the current color of the given pixel
+    current_colour = pixels[y][x]
+    
+    # Now let's explore the region    
+    # Let's push first pixel to the map
+    @region_map << [x, y]
+    
+    # We are looking for pixels in all 4 directions with the same colour
+    @image = pixels
+    @colour = current_colour
+    
+    # Launching the exploration mission
+    explore_around_pixel(x, y)
+    
+    # We are back from recursion, and we should have a region map
+    @region_map.each do |point|
+      @image[point[1]][point[0]] = colour
+    end
+    
+    @image
+  end
+  
+  #
+  # Invoking a small recursion here
+  # to properly explore the region
+  #
+  def explore_around_pixel(x, y)
+    puts "Exploring x: #{x} y: #{y}"
+    
+    # Going up
+    unless y == 0
+      if @colour == @image[y-1][x]
+        # Check if our map already contains this pixel
+        unless @region_map.include?([x, y-1])
+          @region_map << [x, y-1]
+          explore_around_pixel(x, y-1)
+        end
+      end
+    end
+    
+    # Going down
+    unless y+1 >= @image.length
+      if @colour == @image[y+1][x]
+        unless @region_map.include?([x, y+1])
+          @region_map << [x, y+1]
+          explore_around_pixel(x, y+1)
+        end
+      end
+    end
+        
   end
   
   # Basically checking that requested coordinates are

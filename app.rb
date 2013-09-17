@@ -41,6 +41,7 @@ while (!@exit_commands.include?(@input[0]))
     
   when 'F'
     # Fill the region
+    @the_image = @editor.fill_region(@the_image, @input[1].to_i, @input[2].to_i, @input[3])
     
   when 'S'
     # Print out the current image
@@ -56,6 +57,7 @@ while (!@exit_commands.include?(@input[0]))
     puts "L X Y C --- Colours the pixel (X,Y) with colour C"
     puts "V X Y1 Y2 C --- Draw a vertical segment of colour C in column X between rows Y1 and Y2 (inclusive)"
     puts "H X1 X2 Y C --- Draw a horizontal segment of colour C in row Y between columns X1 and X2 (inclusive)"
+    puts "F X Y C --- Fill the region R with the colour C"
     puts "X --- exit"
     puts "\n\n"
   else
